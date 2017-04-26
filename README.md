@@ -1,3 +1,3 @@
 Mastermind Python
 Projet Bac ISN 2017 
-Lycée LaMerci
+Lycée Notre-Dame de La Merci Montepllier
