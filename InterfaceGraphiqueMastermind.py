@@ -50,8 +50,6 @@ def Mastermind():
 		
 		global Code, Code_Aux, Nb_Essais_Max, Longueur_Code, Chiffres_Acceptees, Choix_Code
 		
-		showwarning("Avertissement", "Un son sera joué à la fin de la partie.\nAugmentez le volume de votre ordinateur pour l'entendre.")
-		
 		try:
 			a = int(Nb_Essais_Max)
 		except:
@@ -91,6 +89,8 @@ def Mastermind():
 				showwarning("Erreur de syntaxe", "Veuillez définir un méthode de génération du code.")
 				Mastermind()
 				return
+				
+			showwarning("Avertissement", "Un son sera joué à la fin de la partie.\nAugmentez le volume de votre ordinateur pour l'entendre.")
 			
 			Liste_Widgets = [Label_Pseudo, Entree_Pseudo, Bouton_Entrer, Label_Parametres, Entree_Parametre_1, Entree_Parametre_2, Menu_Parametre_3, Menu_Parametre_4, Bouton_Jouer]
 			for widget in Liste_Widgets:
