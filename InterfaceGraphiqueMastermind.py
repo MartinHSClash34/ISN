@@ -29,6 +29,12 @@ def Mastermind():
 	def Recup_Pseudo():
 	
 		Pseudo = Entree_Pseudo.get()
+		Liste_Pseudo = list(Pseudo)
+		
+		if Liste_Pseudo == []:
+			showwarning("Erreur de syntaxe", "Vous n'avez pas entré de pseudo.")
+			Mastermind()
+		
 		if Pseudo == "":
 			showwarning("Erreur de syntaxe", "Vous n'avez pas entré de pseudo.")
 			Mastermind()
@@ -89,8 +95,6 @@ def Mastermind():
 				showwarning("Erreur de syntaxe", "Veuillez définir un méthode de génération du code.")
 				Mastermind()
 				return
-				
-			showwarning("Avertissement", "Un son sera joué à la fin de la partie.\nAugmentez le volume de votre ordinateur pour l'entendre.")
 			
 			Liste_Widgets = [Label_Pseudo, Entree_Pseudo, Bouton_Entrer, Label_Parametres, Entree_Parametre_1, Entree_Parametre_2, Menu_Parametre_3, Menu_Parametre_4, Bouton_Jouer]
 			for widget in Liste_Widgets:
@@ -123,6 +127,7 @@ def Mastermind():
 				
 					Bouton_Verifier.destroy()
 					Essai = Entree_Essai.get()
+					
 					Code = Code_Aux[:]
 					Bien, Mal, j = 0, 0, 0
 					global Nb_Essais
@@ -210,16 +215,19 @@ def Mastermind():
 			print(Code)												# À SUPPRIMER
 			Code_Aux = Code[:]
 			Nb_Essais = 1
+			showwarning("Avertissement", "Un son sera joué à la fin de la partie.\nAugmentez le volume de votre ordinateur pour l'entendre.")
+			
 			Preparation_Essai()
 		else:
 			def Recup_Code():
 				
 				global Code, Code_Aux, Nb_Essais
+			
 				Code = Entree_Code.get()
 				
 				Label_Code.destroy()
 				Entree_Code.destroy()
-				Bouton_Def_Code.destroy()
+				Bouton_Code.destroy()
 				
 				try:
 					a = int(Code)
@@ -237,10 +245,12 @@ def Mastermind():
 							showwarning("Erreur de syntaxe", "Le code doit respecter les paramètres.")
 							Preparation_Partie()
 							return
+							
 				Code = list(Code)
 				print(Code) 										# À SUPPRIMER
 				Code_Aux = Code[:]
 				Nb_Essais = 1
+				showwarning("Avertissement", "Un son sera joué à la fin de la partie.\nAugmentez le volume de votre ordinateur pour l'entendre.")
 				
 				Preparation_Essai()
 			
@@ -248,11 +258,11 @@ def Mastermind():
 			
 			Label_Code = Label(Fenetre, text="Définissez un code pour l'autre joueur :")
 			Entree_Code = Entry(Fenetre, textvariable=StringVar(), width=Longueur_Code)
-			Bouton_Def_Code = Button(Fenetre, text="Définir", command=Recup_Code)
+			Bouton_Code = Button(Fenetre, text="Définir", command=Recup_Code)
 				
 			Label_Code.grid(row=4, column=1)
 			Entree_Code.grid(row=4, column=2)
-			Bouton_Def_Code.grid(row=4, column=3)
+			Bouton_Code.grid(row=4, column=3)
 
 		def Rejouer():
 			
