@@ -1,7 +1,10 @@
 ﻿from tkinter import *
 from random import *
 from tkinter.messagebox import *
-from winsound import *
+try:
+	from winsound import *
+except:
+	pass
 
 Fenetre = Tk()
 Fenetre.title("Mastermind")
@@ -16,7 +19,6 @@ def Mastermind():
 		
 	try:
 		del Nb_Essais_Max
-		del Choix_Code
 	except:
 		pass
 
@@ -34,10 +36,12 @@ def Mastermind():
 		if Liste_Pseudo == []:
 			showwarning("Erreur de syntaxe", "Vous n'avez pas entré de pseudo.")
 			Mastermind()
+			return
 		
 		if Pseudo == "":
 			showwarning("Erreur de syntaxe", "Vous n'avez pas entré de pseudo.")
 			Mastermind()
+			return
 		else:
 			Noms_Joueurs.append(Pseudo)
 			
@@ -45,7 +49,6 @@ def Mastermind():
 			Entree_Pseudo.destroy()
 			Bouton_Entrer.destroy()
 			
-			global Label_Chance
 			Label_Chance = Label(Fenetre, text="Bonne chance "+str(Pseudo)+" !", fg="green")
 			Label_Chance.grid(row=1, column=1)
 
@@ -172,8 +175,11 @@ def Mastermind():
 					if Bien == Longueur_Code:
 						Entree_Essai.destroy()
 						
-						Son_Victoire = "Son_Victoire.wav"
-						PlaySound(Son_Victoire, SND_NOWAIT)
+						try:
+							Son_Victoire = "Son_Victoire.wav"
+							PlaySound(Son_Victoire, SND_NOWAIT)
+						except:
+							pass
 						
 						Label_Essai_Correct = Label(Fenetre, text=EssaiAux, fg="red")
 						Label_Gagne = Label(Fenetre, text="Gagné ! Vous avez trouvé le code en "+str(Nb_Essais)+" essai(s).", fg="green")
@@ -199,8 +205,11 @@ def Mastermind():
 			else:
 				Code = Code_Aux[:]
 				
-				Son_Défaite = "Son_Défaite.wav"
-				PlaySound(Son_Défaite, SND_NOWAIT)
+				try:
+					Son_Défaite = "Son_Défaite.wav"
+					PlaySound(Son_Défaite, SND_NOWAIT)
+				except:
+					pass
 				
 				Label_Perdu = Label(Fenetre, text="Perdu ! Vous avez utilisé vos "+str(Nb_Essais_Max)+" essais. Le code était "+"".join(Code), fg="red")
 				Label_Perdu.grid(row=Nb_Essais+5, column=1)
@@ -208,20 +217,20 @@ def Mastermind():
 				Rejouer()
 		
 		if Choix_Code == "...aléatoirement par l'ordinateur":
-			global Code, Code_Aux, Nb_Essais
+			global Code, Code_Aux
 			Code = []
 			for i in range(Longueur_Code):
 				Code.append(str(randint(0,Chiffres_Acceptees)))
 			print(Code)												# À SUPPRIMER
 			Code_Aux = Code[:]
 			Nb_Essais = 1
-			showwarning("Avertissement", "Un son sera joué à la fin de la partie.\nAugmentez le volume de votre ordinateur pour l'entendre.")
+			showwarning("Avertissement", "Si votre ordinateur est sous Windows, un son sera joué à la fin de la partie.\nAugmentez le volume de votre ordinateur pour l'entendre.")
 			
 			Preparation_Essai()
 		else:
 			def Recup_Code():
 				
-				global Code, Code_Aux, Nb_Essais
+				global Code, Code_Aux
 			
 				Code = Entree_Code.get()
 				
@@ -250,7 +259,7 @@ def Mastermind():
 				print(Code) 										# À SUPPRIMER
 				Code_Aux = Code[:]
 				Nb_Essais = 1
-				showwarning("Avertissement", "Un son sera joué à la fin de la partie.\nAugmentez le volume de votre ordinateur pour l'entendre.")
+				showwarning("Avertissement", "Si votre ordinateur est sous Windows, un son sera joué à la fin de la partie.\nAugmentez le volume de votre ordinateur pour l'entendre.")
 				
 				Preparation_Essai()
 			
