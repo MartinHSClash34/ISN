@@ -18,6 +18,7 @@ def Mastermind():
 		widget.destroy()
 		
 	try:
+		global Nb_Essais_Max
 		del Nb_Essais_Max
 	except:
 		pass
@@ -57,7 +58,7 @@ def Mastermind():
 			
 	def Preparation_Partie():
 		
-		global Code, Code_Aux, Nb_Essais_Max, Longueur_Code, Chiffres_Acceptees, Choix_Code
+		global Code, Code_Aux, Nb_Essais_Max, Longueur_Code, Chiffres_Acceptees, Choix_Code, Nb_Essais
 		
 		try:
 			a = int(Nb_Essais_Max)
