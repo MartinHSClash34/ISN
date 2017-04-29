@@ -212,7 +212,7 @@ def Mastermind():
 				except:
 					pass
 				
-				Label_Perdu = Label(Fenetre, text="Perdu ! Vous avez utilisé vos "+str(Nb_Essais_Max)+" essais. Le code était "+"".join(Code), fg="red")
+				Label_Perdu = Label(Fenetre, text="Perdu ! Vous avez utilisé votre(vos) "+str(Nb_Essais_Max)+" essai(s). Le code était "+"".join(Code), fg="red")
 				Label_Perdu.grid(row=Nb_Essais+5, column=1)
 			
 				Rejouer()
