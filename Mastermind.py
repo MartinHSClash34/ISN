@@ -1,25 +1,22 @@
 ﻿from tkinter import * # La syntaxe "from [module] import *" évite d'avoir à écrire "[module].[fonction]" chaque fois que l'on utilise une fonction du module
 from random import *
 from tkinter.messagebox import *
-try: # Le module "winsound" n'est pas disponible sur Mac, on utilise "try" pour essayer de l'importer
-	from winsound import * 
-except: # Exécute quelque chose en cas d'erreur
-	pass # "pass" n'exécute rien, mais "except" est obligatoire s'il y a un "try" avant (ici, on ignore une erreur d'importation)
 
 Fenetre = Tk() # Création de la fenêtre
 Fenetre.title("Mastermind") # Définition du titre de la fenêtre
 
-Noms_Joueurs = [] # Création de listes vides
+# Création de listes vides qui accueilleront les scores et les pseudos
+Noms_Joueurs = [] 
 Scores_Joueurs = []
 
-def Mastermind(): # Fonction mère qui contient les autres fonctions
+def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fenêtre) pour le pseudo et les paramètres et qui contient également les autres fonctions
 	
-	for widget in Fenetre.winfo_children(): # "Fenetre.winfo_children" est la liste de tous les widgets (éléments) de la fenêtre
-		widget.destroy() # On détruit d'abord tous les widgets pour (re)commencer une partie
+	for widget in Fenetre.winfo_children(): # "Fenetre.winfo_children" est la liste de tous les widgets de la fenêtre
+		widget.destroy() # D'abord suppression tous les widgets pour (re)commencer une partie
 	
 	try: # On utilise "try" pour cette suppression de variable car il est normal que ce paramètre ne soit pas encore défini au début de la première partie
 		global Nb_Essais_Max # "global" définit la variable comme locale aussi à cette fonction et non locale seulement à la fonction où elle est définie
-		del Nb_Essais_Max # On supprime ce paramètre pour que le "try" de la fonction Recuperation_Parametres fonctionne lors de parties successives
+		del Nb_Essais_Max # Suppression de ce paramètre pour que le "try" de la fonction Recuperation_Parametres fonctionne lors de parties successives
 	except:
 		pass
 
@@ -29,19 +26,17 @@ def Mastermind(): # Fonction mère qui contient les autres fonctions
 	Label_Pseudo.grid(row=1, column=1) # La méthode "grid" permet d'organiser les widgets en tableau (lignes et colonnes)
 	Entree_Pseudo.grid(row=1, column=2)
 
-	def Recuperation_Pseudo(): # Fonction récupérant le pseudo du joueur
+	def Recuperation_Pseudo(): # Fonction récupérant et vérifiant le pseudo du joueur dans le champ de saisie dédié
 
 		Pseudo = Entree_Pseudo.get() # ".get()" récupère le contenu d'une entrée sous forme de chaîne de caractères 
 	
-		if Pseudo == "": # On vérifie que le joueur a entré un pseudo
-			showwarning("Erreur de syntaxe", "Vous n'avez pas entré de pseudo.") # Un "showwarning" est une fenêtre pop-up utilisée pour afficher un message d'avertissement
-			Mastermind() # On réexécute la fonction principale (Mastermind) car la syntaxe du pseudo est incorrecte
-			return # "return" stoppe l'exécution de la fonction actuelle (Recuperation_Pseudo) pour que l'on retourne uniquement à la fonction Mastermind
+		if Pseudo == "": # On vérifie que le joueur a bien entré un pseudo
+			showwarning("Erreur de syntaxe", "Vous n'avez pas entré de pseudo.") # Un "showwarning" est une fenêtre pop-up utilisée pour afficher un message d'avertissement, c'est la seule fonction du module "tkinter.messagebox" qui est utilisée
+			pass
 		else:
 			Noms_Joueurs.append(Pseudo)
 		
-			# On supprime les widgets (devenus obsolètes) qui ont permis au joueur d'entrer son pseudo
-		
+			# Suppression des widgets (devenus obsolètes) qui ont permis au joueur d'entrer son pseudo
 			Label_Pseudo.destroy()
 			Entree_Pseudo.destroy()
 			Bouton_Entrer.destroy()
@@ -49,60 +44,61 @@ def Mastermind(): # Fonction mère qui contient les autres fonctions
 			Label_Chance = Label(Fenetre, text="Bonne chance "+str(Pseudo)+" !", fg="green")
 			Label_Chance.grid(row=1, column=1)
 
-	Bouton_Entrer = Button(Fenetre, text="Entrer", command=Recuperation_Pseudo) # Un "Button" est un widget affichant un bouton dont on exécute la commande par un clic gauche
+	Bouton_Entrer = Button(Fenetre, text="Entrer", command=Recuperation_Pseudo) # Un "Button" est un widget affichant un bouton dont on exécute la commande par un clic gauche dessus
 	Bouton_Entrer.grid(row=1, column=3)
 			
-	def Recuperation_Parametres(): # Fonction récupèrant les paramètres de jeu
+	def Recuperation_Parametres(): # Fonction récupèrant les paramètres de jeu dans les widgets dédiés
 		
-		global Code, Code_Aux, Nb_Essais_Max, Longueur_Code, Chiffres_Admis, Choix_Code, Nb_Essais
+		global Code, Code2, Nb_Essais_Max, Longueur_Code, Chiffres_Admis, Choix_Code, Nb_Essais
 		
-		try: # Ce try vérifie si les paramètres ont déjà été définis si on réexécute plus tard cette fontion si la syntaxe du code s'il est défini manuellement est incorrecte
+		try: # Ce "try" vérifie si les paramètres ont déjà été définis si on rappelle plus tard cette fontion si la syntaxe du code s'il est défini manuellement est incorrecte
 			a = int(Nb_Essais_Max) # La vérification de seulement un seul paramètre est nécessaire
 		except:
-			Nb_Essais_Max = Entree_Parametre_1.get() # On récupère les paramètres
+			# Récupération des paramètres
+			Nb_Essais_Max = Entree_Parametre_1.get() 
 			Longueur_Code = Entree_Parametre_2.get()
 			Chiffres_Admis = VariableParametre3.get()
 			Choix_Code = VariableParametre4.get()
 			
-			# Les boucles "if" et les "try" qui vont suivre vérifient les syntaxes des paramètres récupérés, et réexécute la fonction Mastermind en cas d'erreur pour que le joueur les redéfinisse correctement
-			
+			# Les boucles "if" et les "try" qui vont suivre vérifient la syntaxe des paramètres récupérés, et rappelle la fonction Mastermind en cas d'erreur pour que le joueur les redéfinisse correctement
+
 			try:
 				a = int(Nb_Essais_Max)
 			except:
 				showwarning("Erreur de syntaxe", "Le nombre d'essais maximum doit être un nombre entier positif.")
-				Mastermind()
-				return
+				pass
+				return # "return" stoppe l'exécution de la fonction dans laquelle il se trouve (comme un "break" dans une boucle while), ici on retourne uniquement à la fonction Mastermind
 			if int(Nb_Essais_Max) < 1:
 				showwarning("Erreur de syntaxe", "Le nombre d'essais maximum doit être un nombre entier positif.")
-				Mastermind()
+				pass
 				return
 			
 			try:
 				a = int(Longueur_Code)
 			except:
 				showwarning("Erreur de syntaxe", "La longueur du code doit être un nombre entier positif.")
-				Mastermind()
+				pass
 				return
 			if int(Longueur_Code) < 1:
 				showwarning("Erreur de syntaxe", "La longueur du code doit être un nombre entier positif.")
-				Mastermind()
+				pass
 				return
 				
 			if Chiffres_Admis == "Choisissez une valeur":
-				showwarning("Erreur de syntaxe", "Veuillez définir les chiffres acceptees.")
-				Mastermind()
+				showwarning("Erreur de syntaxe", "Veuillez définir les chiffres admis dans le code.")
+				pass
 				return
 				
 			if Choix_Code == "Choisissez comment":
 				showwarning("Erreur de syntaxe", "Veuillez définir un méthode de génération du code.")
-				Mastermind()
+				pass
 				return
 			
 			Liste_Widgets = [Label_Pseudo, Entree_Pseudo, Bouton_Entrer, Label_Parametres, Entree_Parametre_1, Entree_Parametre_2, Menu_Parametre_3, Menu_Parametre_4, Bouton_Jouer]
 			for widget in Liste_Widgets:			 
-				widget.destroy() # On supprime les widgets qui ont permis au joueur de définir les paramètres
+				widget.destroy() # Suppression des widgets qui ont permis au joueur de définir les paramètres
 			
-			# On les remplace par des labels (fixes, donc) pour que les paramètres ne puissent plus être changés mais restent visibles
+			# On les remplace par des labels (fixes, donc) pour que les paramètres ne puissent plus être changés, mais restent quand même visibles
 			
 			Label_Parametre_1 = Label(Fenetre, text=Nb_Essais_Max, fg="orange")
 			Label_Parametre_2 = Label(Fenetre, text=Longueur_Code, fg="orange")
@@ -114,13 +110,13 @@ def Mastermind(): # Fonction mère qui contient les autres fonctions
 			Label_Parametre_3.grid(row=3, column=4)
 			Label_Parametre_4.grid(row=3, column=5)
 			
-			# On change le type des variables des paramètres pour qu'ils soient des nombres entiers utilisables mathématiquement dans les fonctions suivantes
+			# Changement du type des variables des paramètres pour qu'ils soient des nombres entiers utilisables mathématiquement dans les fonctions suivantes
 			
 			Nb_Essais_Max = int(Nb_Essais_Max)
 			Longueur_Code = int(Longueur_Code)
 			Chiffres_Admis = int(Chiffres_Admis)
 
-		def Preparation_Essai(): # Fonction permettant au joueur de rentrer son essai
+		def Preparation_Essai(): # Fonction affichant les widgets dédiés à la saisie de l'essai par le joueur
 			
 			global Nb_Essais_Max, Nb_Essais
 			
@@ -133,36 +129,34 @@ def Mastermind(): # Fonction mère qui contient les autres fonctions
 			
 				def Diagnostic(): # Fonction établissant le diagnostic de l'essai rentré
 					
-					# On supprime ces boutons car ils seront réaffichés pour l'essai suivant
-					
-					Bouton_Diagnostiquer.destroy()
-					Bouton_Abandonner.destroy()
-					
 					Essai = Entree_Essai.get() # On récupère l'essai du joueur
 					
-					Code = Code_Aux[:] # Le code récupère sa valeur initiale
+					Code = Code2[:] # Le code récupère sa valeur initiale
 					Bien, Mal, j = 0, 0, 0 # On réinitialise les variables du diagnostic
 					global Nb_Essais
 					
-					# Cette boucle "if" vérifie la syntaxe de l'essai, et réexécute la fonction Preparation_Essai en cas d'erreur, pour que le joueur rentre un essai valide
-					
-					if len(Essai) != Longueur_Code:
+					if len(Essai) != Longueur_Code: # Cette boucle "if" vérifie la syntaxe de l'essai
 						showwarning("Erreur de syntaxe", "Un essai doit respecter les parametres.")
-						Preparation_Essai()
+						pass
 						return
 					else:
 						for i in range(Chiffres_Admis + 1, 10):
 							if str(i) in Essai:
 								showwarning("Erreur de syntaxe", "Un essai doit respecter les parametres.")
-								Preparation_Essai()
+								pass
 								return
 						try:
 							a = int(Essai)
 						except:
 							showwarning("Erreur de syntaxe", "Un essai doit respecter les parametres.")
-							Preparation_Essai()
+							pass
 							return	
-							
+					
+					# On supprime ces boutons car ils seront réaffichés pour l'essai suivant
+					
+					Bouton_Diagnostiquer.destroy()
+					Bouton_Abandonner.destroy()
+					
 					Essai = list(Essai) # Changement du type de variable de l'essai en "liste" pour diagnostiquer individuellement chaque chiffre
 					EssaiAux = Essai[:] # Définition d'une variable égale à l'essai pour garder sa valeur initiale qui sera réutilisée car certains chiffres de l'essai pourront être supprimés lors du diagnostic
 					
@@ -190,7 +184,7 @@ def Mastermind(): # Fonction mère qui contient les autres fonctions
 						
 						try: # Ce "try" essaie de jouer un son en cas de victoire, et ignore toute erreur en cas d'erreur d'importation préalable
 							Son_Victoire = "Son_Victoire.wav" # "Son_Victoire.wav" est un des fichiers audio téléchargés avec le programme
-							PlaySound(Son_Victoire, SND_NOWAIT)
+							winsound.PlaySound(Son_Victoire, winsound.SND_NOWAIT)
 						except:
 							pass
 						
@@ -213,13 +207,19 @@ def Mastermind(): # Fonction mère qui contient les autres fonctions
 						Nb_Essais += 1
 						Preparation_Essai() # On réexécute la fonction Preparation_Essai pour préparer le diagnostic de l'essai suivant
 				
+				global Rejouer
 				def Rejouer(): # Fonction permettant au joueur de rejouer directement
 			
-					global Pseudo
+					global Pseudo, Label_Chance
 			
 					Liste = [Label_Essai, Entree_Essai, Bouton_Diagnostiquer, Bouton_Abandonner] # En cas d'abandon, on supprime les widgets du dernier essai qui n'ont pas été supprimés par la fonction Diagnostic 
 					for widget in Liste:
 						widget.destroy()
+					
+					try:
+						Label_Chance.destroy()
+					except:
+						pass
 					
 					try:
 						del Pseudo
@@ -266,36 +266,38 @@ def Mastermind(): # Fonction mère qui contient les autres fonctions
 				Bouton_Abandonner = Button(Fenetre, text="Abandonner", command=Rejouer, fg="red")
 				Bouton_Abandonner.grid(row=Nb_Essais+4, column=4)
 			else:
-				Code = Code_Aux[:]
-				
 				try:
 					Son_Défaite = "Son_Défaite.wav" # "Son_Défaite.wav" est un des fichiers audio téléchargés avec le programme
-					PlaySound(Son_Défaite, SND_NOWAIT)
+					winsound.PlaySound(Son_Défaite, winsound.SND_NOWAIT)
 				except:
 					pass
 				
-				Label_Perdu = Label(Fenetre, text="Perdu ! Vous avez utilisé votre(vos) "+str(Nb_Essais_Max)+" essai(s). Le code était "+"".join(Code), fg="red")
+				Label_Perdu = Label(Fenetre, text="Perdu ! Vous avez utilisé votre(vos) "+str(Nb_Essais_Max)+" essai(s). Le code était "+"".join(Code2), fg="red")
 				Label_Perdu.grid(row=Nb_Essais+5, column=1)
-			
+				
 				Rejouer()
 		
 		if Choix_Code == "...aléatoirement par l'ordinateur":
-			global Code, Code_Aux
+			global Code, Code2
 			Code = []
 			for i in range(Longueur_Code):
-				Code.append(str(randint(0,Chiffres_Admis)))
+				Code.append(str(randint(0,Chiffres_Admis))) # "randit" est la seule fonction du module "random" que l'on importe, elle choisit un entier aléatoire entre 2 arguments a et b entiers inclus
 			print(Code)												# À SUPPRIMER
-			Code_Aux = Code[:]
+			Code2 = Code[:]
 			Nb_Essais = 1
-			showwarning("Avertissement", "Si votre ordinateur est sous Windows, un son sera joué à la fin de la partie.\nAugmentez le volume de votre ordinateur pour l'entendre.")
+			try: # Le module "winsound" n'est pas disponible sur Mac, on utilise "try" pour essayer de l'importer
+				import winsound 
+				showwarning("Avertissement", "Un son sera joué à la fin de la partie.\nActivez et/ou augmentez le volume de votre ordinateur pour l'entendre.")
+			except: # Exécute quelque chose en cas d'erreur
+				pass # "pass" n'exécute rien, mais "except" est obligatoire s'il y a un "try" avant (ici, on ignore une erreur d'importation)
 			
 			Preparation_Essai()
 		else:
 			def Recuperation_Code(): # Fonction récupérant le code s'il est défini manuellement
 				
-				global Code, Code_Aux, Nb_Essais
+				global Code, Code2, Nb_Essais
 			
-				Code = Entree_Code.get()
+				Code = Entree_Code.get() # On récupère le code proposé par le second joueur
 				
 				Label_Code.destroy()
 				Entree_Code.destroy()
@@ -305,30 +307,34 @@ def Mastermind(): # Fonction mère qui contient les autres fonctions
 					a = int(Code)
 				except:
 					showwarning("Erreur de syntaxe", "Le code doit respecter les paramètres.")
-					Recuperation_Parametres()
+					pass
 					return
 				if len(Code) != Longueur_Code:
 					showwarning("Erreur de syntaxe", "Le code doit respecter les paramètres.")
-					Recuperation_Parametres()
+					pass
 					return
 				else:
 					for i in range(Chiffres_Admis + 1, 10):
 						if str(i) in Code:
 							showwarning("Erreur de syntaxe", "Le code doit respecter les paramètres.")
-							Recuperation_Parametres()
+							pass
 							return
 							
 				Code = list(Code)
 				print(Code) 										# À SUPPRIMER
-				Code_Aux = Code[:]
+				Code2 = Code[:]
 				Nb_Essais = 1
-				showwarning("Avertissement", "Si votre ordinateur est sous Windows, un son sera joué à la fin de la partie.\nAugmentez le volume de votre ordinateur pour l'entendre.")
+				try:
+					import winsound
+					showwarning("Avertissement", "Un son sera joué à la fin de la partie.\nActivez et/ou augmentez le volume de votre ordinateur pour l'entendre.")
+				except:
+					pass
 				
 				Preparation_Essai()
 			
 			Bouton_Jouer.destroy()
 			
-			# Les widgets suivants sont ceux relatifs à
+			# Les widgets suivants sont ceux relatifs à la définition du code par le second joueur
 			
 			Label_Code = Label(Fenetre, text="Définissez un code pour l'autre joueur :")
 			Entree_Code = Entry(Fenetre, textvariable=StringVar(), width=Longueur_Code)
