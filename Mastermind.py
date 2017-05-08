@@ -267,8 +267,8 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 				Bouton_Abandonner.grid(row=Nb_Essais+4, column=4)
 			else:
 				try:
-					Son_Défaite = "Son_Défaite.wav" # "Son_Défaite.wav" est un des fichiers audio téléchargés avec le programme
-					winsound.PlaySound(Son_Défaite, winsound.SND_NOWAIT)
+					Son_Defaite = "Son_Défaite.wav" # "Son_Défaite.wav" est un des fichiers audio téléchargés avec le programme
+					winsound.PlaySound(Son_Defaite, winsound.SND_NOWAIT)
 				except:
 					pass
 				
