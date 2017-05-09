@@ -36,8 +36,8 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 		Pseudo = Entree_Pseudo.get() # ".get()" récupère le contenu d'une entrée sous forme de chaîne de caractères 
 	
 		if Pseudo == "": # On vérifie que le joueur a bien entré un pseudo
-			showwarning("Erreur de syntaxe", "Vous n'avez pas entré de pseudo.") # Un "showwarning" est une fenêtre pop-up utilisée pour afficher un message d'avertissement, c'est la seule fonction du module "tkinter.messagebox" qui est utilisée
-			pass
+			showwarning("Erreur de syntaxe", "Vous n'avez pas entré de pseudo.") # Un "showwarning" est une fenêtre pop-up utilisée pour afficher un message d'avertissement 
+			pass																 # C'est la seule fonction du module "tkinter.messagebox" qui est utilisée
 		else:
 			Noms_Joueurs.append(Pseudo)
 		
@@ -66,14 +66,15 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 			Chiffres_Admis = VariableParametre3.get()
 			Choix_Code = VariableParametre4.get()
 			
-			# Les boucles "if" et les "try" qui vont suivre vérifient la syntaxe des paramètres récupérés, et rappelle la fonction Mastermind en cas d'erreur pour que le joueur les redéfinisse correctement
+			# Les boucles "if" et les "try" qui vont suivre vérifient la syntaxe des paramètres récupérés, 
+			# et rappelle la fonction Mastermind en cas d'erreur pour que le joueur les redéfinisse correctement
 
 			try:
 				a = int(Nb_Essais_Max)
 			except:
 				showwarning("Erreur de syntaxe", "Le nombre d'essais maximum doit être un nombre entier positif.")
 				pass
-				return # "return" stoppe l'exécution de la fonction dans laquelle il se trouve (comme un "break" dans une boucle while), ici on retourne uniquement à la fonction Mastermind
+				return # On se sert ici de "return" comme d'un "break", mais pour une fonction
 			if int(Nb_Essais_Max) < 1:
 				showwarning("Erreur de syntaxe", "Le nombre d'essais maximum doit être un nombre entier positif.")
 				pass
@@ -164,8 +165,8 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 					Bouton_Abandonner.destroy()
 					
 					Essai = list(Essai) # Changement du type de variable de l'essai en "liste" pour diagnostiquer individuellement chaque chiffre
-					EssaiAux = Essai[:] # Définition d'une variable égale à l'essai pour garder sa valeur initiale qui sera réutilisée car certains chiffres de l'essai pourront être supprimés lors du diagnostic
-					
+					EssaiAux = Essai[:] # Définition d'une variable égale à l'essai pour garder sa valeur initiale qui sera réutilisée 
+										# car certains chiffres de l'essai pourront être supprimés lors du diagnostic
 					while j < len(Code): # Diagnostic des chiffres de l'essai présents à la même place dans le code, ce sont des chiffres "bien placés"
 						if Essai[j] == Code[j]:
 							Bien += 1
@@ -176,8 +177,8 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 						else:
 							j += 1
 					
-					for i in range(len(Essai)): # Cette boucle "for" diagnostique si des chiffres restants dans l'essai sont aussi présents dans le code, ils y seront obligatoirement à des places différentes, ce seront des chiffres "mal placés"
-						if Essai[i] in Code:
+					for i in range(len(Essai)): # Cette boucle "for" diagnostique si des chiffres restants dans l'essai sont aussi présents dans le code, 
+						if Essai[i] in Code:    # ils y seront obligatoirement à des places différentes et ce seront alors des chiffres "mal placés"
 							Mal += 1
 							for k in range(len(Code)):
 								if Essai[i] == Code[k]:
@@ -216,8 +217,8 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 			
 					global Label_Chance, Pseudo
 			
-					Liste = [Label_Essai, Entree_Essai, Bouton_Diagnostiquer, Bouton_Abandonner] # En cas d'abandon, on supprime les widgets du dernier essai qui n'ont pas été supprimés par la fonction Diagnostic 
-					for widget in Liste:
+					Liste = [Label_Essai, Entree_Essai, Bouton_Diagnostiquer, Bouton_Abandonner] # En cas d'abandon, on supprime les widgets du dernier essai 
+					for widget in Liste:														 # qui n'ont pas été supprimés par la fonction Diagnostic
 						widget.destroy()
 					
 					try:
@@ -284,8 +285,8 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 			global Code, Code2
 			Code = []
 			for i in range(Longueur_Code):
-				Code.append(str(randint(0,Chiffres_Admis))) # "randit" est la seule fonction du module "random" que l'on importe, elle choisit un entier aléatoire entre 2 arguments a et b entiers inclus
-			Code2 = Code[:]
+				Code.append(str(randint(0,Chiffres_Admis))) # "randit" est la seule fonction du module "random" que l'on importe,
+			Code2 = Code[:]									# elle choisit un entier aléatoire entre 2 arguments a et b entiers inclus
 			Nb_Essais = 1
 			
 			Preparation_Essai()
