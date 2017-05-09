@@ -1,16 +1,15 @@
 ﻿from tkinter import * # La syntaxe "from [module] import *" évite d'avoir à écrire "[module].[fonction]" chaque fois que l'on utilise une fonction du module
-
-Fenetre = Tk() # Création de la fenêtre
-Fenetre.title("Mastermind") # Définition du titre de la fenêtre
-
 from random import *
 from tkinter.messagebox import *
+
 try: # Le module "winsound" n'est pas disponible sur Mac, on utilise "try" pour essayer de l'importer
 	from winsound import *
-	showwarning("Avertissement", "Un son sera joué à la fin de la partie.\nActivez et/ou augmentez le volume de votre ordinateur pour l'entendre.") # Un "showwarning" est une fenêtre pop-up utilisée pour afficher un message d'avertissement, c'est la seule fonction du module "tkinter.messagebox" qui est utilisée
 except: # Exécute quelque chose en cas d'erreur
 	pass # "pass" n'exécute rien, mais "except" est obligatoire s'il y a un "try" avant (ici, on ignore une erreur d'importation)
 
+Fenetre = Tk() # Création de la fenêtre
+Fenetre.title("Mastermind") # Définition du titre de la fenêtre
+	
 # Création de listes vides qui accueilleront les scores et les pseudos
 Noms_Joueurs = [] 
 Scores_Joueurs = []
@@ -37,7 +36,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 		Pseudo = Entree_Pseudo.get() # ".get()" récupère le contenu d'une entrée sous forme de chaîne de caractères 
 	
 		if Pseudo == "": # On vérifie que le joueur a bien entré un pseudo
-			showwarning("Erreur de syntaxe", "Vous n'avez pas entré de pseudo.") 
+			showwarning("Erreur de syntaxe", "Vous n'avez pas entré de pseudo.") # Un "showwarning" est une fenêtre pop-up utilisée pour afficher un message d'avertissement, c'est la seule fonction du module "tkinter.messagebox" qui est utilisée
 			pass
 		else:
 			Noms_Joueurs.append(Pseudo)
@@ -189,8 +188,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 						Entree_Essai.destroy()
 						
 						try: # Ce "try" essaie de jouer un son en cas de victoire, et ignore toute erreur en cas d'erreur d'importation préalable
-							Son_Victoire = "Son_Victoire.wav" # "Son_Victoire.wav" est un des fichiers audio téléchargés avec le programme
-							PlaySound(Son_Victoire, SND_NOWAIT)
+							PlaySound("Son_Victoire.wav", SND_NOWAIT) # "Son_Victoire.wav" est un des fichiers audio téléchargés avec le programme
 						except:
 							pass
 						
@@ -273,12 +271,11 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 				Bouton_Abandonner.grid(row=Nb_Essais+4, column=4)
 			else:
 				try:
-					Son_Defaite = "Son_Défaite.wav" # "Son_Défaite.wav" est un des fichiers audio téléchargés avec le programme
-					PlaySound(Son_Defaite, SND_NOWAIT)
+					PlaySound("Son_Défaite.wav", SND_NOWAIT) # "Son_Défaite.wav" est un des fichiers audio téléchargés avec le programme
 				except:
 					pass
 				
-				Label_Perdu = Label(Fenetre, text="Perdu ! Vous avez utilisé votre(vos) "+str(Nb_Essais_Max)+" essai(s). Le code était "+"".join(Code2), fg="red")
+				Label_Perdu = Label(Fenetre, text="Perdu ! Vous avez utilisé votre(vos) "+str(Nb_Essais_Max)+" essai(s). Le code était : "+"".join(Code2), fg="red")
 				Label_Perdu.grid(row=Nb_Essais+5, column=1)
 				
 				Rejouer()
