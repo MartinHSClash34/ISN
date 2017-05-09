@@ -45,7 +45,8 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 			Label_Pseudo.destroy()
 			Entree_Pseudo.destroy()
 			Bouton_Entrer.destroy()
-		
+			
+			global Label_Chance
 			Label_Chance = Label(Fenetre, text="Bonne chance "+str(Pseudo)+" !", fg="green")
 			Label_Chance.grid(row=1, column=1)
 
@@ -141,19 +142,19 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 					global Nb_Essais
 					
 					if len(Essai) != Longueur_Code: # Cette boucle "if" vérifie la syntaxe de l'essai
-						showwarning("Erreur de syntaxe", "Un essai doit respecter les parametres.")
+						showwarning("Erreur de syntaxe", "Un essai doit respecter les paramètres.")
 						pass
 						return
 					else:
 						for i in range(Chiffres_Admis + 1, 10):
 							if str(i) in Essai:
-								showwarning("Erreur de syntaxe", "Un essai doit respecter les parametres.")
+								showwarning("Erreur de syntaxe", "Un essai doit respecter les paramètres.")
 								pass
 								return
 						try:
 							a = int(Essai)
 						except:
-							showwarning("Erreur de syntaxe", "Un essai doit respecter les parametres.")
+							showwarning("Erreur de syntaxe", "Un essai doit respecter les paramètres.")
 							pass
 							return	
 					
@@ -180,23 +181,22 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 							Mal += 1
 							for k in range(len(Code)):
 								if Essai[i] == Code[k]:
-									Position = k
+									Code.remove(Code[k]) # Suppression des chiffres "mal placés" dans le code au fur et à mesure pour ne pas compter plusieurs fois les mêmes
 									break
-							Code.remove(Code[k]) # Suppression des chiffres "mal placés" dans le code au fur et à mesure pour ne pas compter plusieurs fois les mêmes
-							
+
 					if Bien == Longueur_Code: # S'il y a autant de chiffres "bien placés" que de chiffres dans le code, la partie est terminée, c'est une victoire
 						Entree_Essai.destroy()
-						
-						try: # Ce "try" essaie de jouer un son en cas de victoire, et ignore toute erreur en cas d'erreur d'importation préalable
-							PlaySound("Son_Victoire.wav", SND_NOWAIT) # "Son_Victoire.wav" est un des fichiers audio téléchargés avec le programme
-						except:
-							pass
 						
 						Label_Essai_Correct = Label(Fenetre, text=EssaiAux, fg="red")
 						Label_Gagne = Label(Fenetre, text="Gagné ! Vous avez trouvé le code en "+str(Nb_Essais)+" essai(s).", fg="green")
 					
 						Label_Essai_Correct.grid(row=Nb_Essais+4, column=2)
 						Label_Gagne.grid(row=Nb_Essais+5, column=1)
+						
+						try: # Ce "try" essaie de jouer un son en cas de victoire, et ignore toute erreur en cas d'erreur d'importation préalable
+							PlaySound("Son_Victoire.wav", SND_NOWAIT) # "Son_Victoire.wav" est un des fichiers audio téléchargés avec le programme
+						except:
+							pass
 					
 						Rejouer() # La partie est finie, on exécute la fonction "Rejouer"
 					else: # Si l'essai n'est pas identique au code, on affiche le diagnostic"
@@ -214,7 +214,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 				global Rejouer
 				def Rejouer(): # Fonction permettant au joueur de rejouer directement
 			
-					global Pseudo, Label_Chance
+					global Label_Chance, Pseudo
 			
 					Liste = [Label_Essai, Entree_Essai, Bouton_Diagnostiquer, Bouton_Abandonner] # En cas d'abandon, on supprime les widgets du dernier essai qui n'ont pas été supprimés par la fonction Diagnostic 
 					for widget in Liste:
@@ -270,13 +270,13 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 				Bouton_Abandonner = Button(Fenetre, text="Abandonner", command=Rejouer, fg="red")
 				Bouton_Abandonner.grid(row=Nb_Essais+4, column=4)
 			else:
+				Label_Perdu = Label(Fenetre, text="Perdu ! Vous avez utilisé votre(vos) "+str(Nb_Essais_Max)+" essai(s). Le code était : "+"".join(Code2), fg="red")
+				Label_Perdu.grid(row=Nb_Essais+5, column=1)
+				
 				try:
 					PlaySound("Son_Défaite.wav", SND_NOWAIT) # "Son_Défaite.wav" est un des fichiers audio téléchargés avec le programme
 				except:
 					pass
-				
-				Label_Perdu = Label(Fenetre, text="Perdu ! Vous avez utilisé votre(vos) "+str(Nb_Essais_Max)+" essai(s). Le code était : "+"".join(Code2), fg="red")
-				Label_Perdu.grid(row=Nb_Essais+5, column=1)
 				
 				Rejouer()
 		
@@ -285,7 +285,6 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 			Code = []
 			for i in range(Longueur_Code):
 				Code.append(str(randint(0,Chiffres_Admis))) # "randit" est la seule fonction du module "random" que l'on importe, elle choisit un entier aléatoire entre 2 arguments a et b entiers inclus
-			print(Code)												# À SUPPRIMER
 			Code2 = Code[:]
 			Nb_Essais = 1
 			
@@ -297,6 +296,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 			
 				Code = Entree_Code.get() # On récupère le code proposé par le second joueur
 				
+				# Vérification de la syntaxe du code
 				try:
 					a = int(Code)
 				except:
@@ -318,8 +318,8 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 				Entree_Code.destroy()
 				Bouton_Code.destroy()
 				
+				# Initialisation des variables-clés
 				Code = list(Code)
-				print(Code) 										# À SUPPRIMER
 				Code2 = Code[:]
 				Nb_Essais = 1
 
