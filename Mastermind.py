@@ -1,9 +1,15 @@
 ﻿from tkinter import * # La syntaxe "from [module] import *" évite d'avoir à écrire "[module].[fonction]" chaque fois que l'on utilise une fonction du module
-from random import *
-from tkinter.messagebox import *
 
 Fenetre = Tk() # Création de la fenêtre
 Fenetre.title("Mastermind") # Définition du titre de la fenêtre
+
+from random import *
+from tkinter.messagebox import *
+try: # Le module "winsound" n'est pas disponible sur Mac, on utilise "try" pour essayer de l'importer
+	from winsound import *
+	showwarning("Avertissement", "Un son sera joué à la fin de la partie.\nActivez et/ou augmentez le volume de votre ordinateur pour l'entendre.") # Un "showwarning" est une fenêtre pop-up utilisée pour afficher un message d'avertissement, c'est la seule fonction du module "tkinter.messagebox" qui est utilisée
+except: # Exécute quelque chose en cas d'erreur
+	pass # "pass" n'exécute rien, mais "except" est obligatoire s'il y a un "try" avant (ici, on ignore une erreur d'importation)
 
 # Création de listes vides qui accueilleront les scores et les pseudos
 Noms_Joueurs = [] 
@@ -31,7 +37,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 		Pseudo = Entree_Pseudo.get() # ".get()" récupère le contenu d'une entrée sous forme de chaîne de caractères 
 	
 		if Pseudo == "": # On vérifie que le joueur a bien entré un pseudo
-			showwarning("Erreur de syntaxe", "Vous n'avez pas entré de pseudo.") # Un "showwarning" est une fenêtre pop-up utilisée pour afficher un message d'avertissement, c'est la seule fonction du module "tkinter.messagebox" qui est utilisée
+			showwarning("Erreur de syntaxe", "Vous n'avez pas entré de pseudo.") 
 			pass
 		else:
 			Noms_Joueurs.append(Pseudo)
@@ -184,7 +190,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 						
 						try: # Ce "try" essaie de jouer un son en cas de victoire, et ignore toute erreur en cas d'erreur d'importation préalable
 							Son_Victoire = "Son_Victoire.wav" # "Son_Victoire.wav" est un des fichiers audio téléchargés avec le programme
-							winsound.PlaySound(Son_Victoire, winsound.SND_NOWAIT)
+							PlaySound(Son_Victoire, SND_NOWAIT)
 						except:
 							pass
 						
@@ -268,7 +274,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 			else:
 				try:
 					Son_Defaite = "Son_Défaite.wav" # "Son_Défaite.wav" est un des fichiers audio téléchargés avec le programme
-					winsound.PlaySound(Son_Defaite, winsound.SND_NOWAIT)
+					PlaySound(Son_Defaite, SND_NOWAIT)
 				except:
 					pass
 				
@@ -285,11 +291,6 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 			print(Code)												# À SUPPRIMER
 			Code2 = Code[:]
 			Nb_Essais = 1
-			try: # Le module "winsound" n'est pas disponible sur Mac, on utilise "try" pour essayer de l'importer
-				import winsound 
-				showwarning("Avertissement", "Un son sera joué à la fin de la partie.\nActivez et/ou augmentez le volume de votre ordinateur pour l'entendre.")
-			except: # Exécute quelque chose en cas d'erreur
-				pass # "pass" n'exécute rien, mais "except" est obligatoire s'il y a un "try" avant (ici, on ignore une erreur d'importation)
 			
 			Preparation_Essai()
 		else:
@@ -298,10 +299,6 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 				global Code, Code2, Nb_Essais
 			
 				Code = Entree_Code.get() # On récupère le code proposé par le second joueur
-				
-				Label_Code.destroy()
-				Entree_Code.destroy()
-				Bouton_Code.destroy()
 				
 				try:
 					a = int(Code)
@@ -319,17 +316,16 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 							showwarning("Erreur de syntaxe", "Le code doit respecter les paramètres.")
 							pass
 							return
-							
+				
+				Label_Code.destroy()
+				Entree_Code.destroy()
+				Bouton_Code.destroy()
+				
 				Code = list(Code)
 				print(Code) 										# À SUPPRIMER
 				Code2 = Code[:]
 				Nb_Essais = 1
-				try:
-					import winsound
-					showwarning("Avertissement", "Un son sera joué à la fin de la partie.\nActivez et/ou augmentez le volume de votre ordinateur pour l'entendre.")
-				except:
-					pass
-				
+
 				Preparation_Essai()
 			
 			Bouton_Jouer.destroy()
