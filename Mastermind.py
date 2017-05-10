@@ -68,37 +68,37 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 			
 			# Les boucles "if" et les "try" qui vont suivre vérifient la syntaxe des paramètres récupérés, 
 			# et rappelle la fonction Mastermind en cas d'erreur pour que le joueur les redéfinisse correctement
-
+			
 			try:
 				a = int(Nb_Essais_Max)
 			except:
 				showwarning("Erreur de syntaxe", "Le nombre d'essais maximum doit être un nombre entier positif.")
-				pass
-				return # On se sert ici de "return" comme d'un "break", mais pour une fonction
+				del Nb_Essais_Max
+				return # On se sert ici de "return" tout seul comme d'un "break", mais pour une fonction
 			if int(Nb_Essais_Max) < 1:
 				showwarning("Erreur de syntaxe", "Le nombre d'essais maximum doit être un nombre entier positif.")
-				pass
+				del Nb_Essais_Max
 				return
 			
 			try:
 				a = int(Longueur_Code)
 			except:
 				showwarning("Erreur de syntaxe", "La longueur du code doit être un nombre entier positif.")
-				pass
+				del Nb_Essais_Max
 				return
 			if int(Longueur_Code) < 1:
 				showwarning("Erreur de syntaxe", "La longueur du code doit être un nombre entier positif.")
-				pass
+				del Nb_Essais_Max
 				return
 				
 			if Chiffres_Admis == "Choisissez une valeur":
 				showwarning("Erreur de syntaxe", "Veuillez définir les chiffres admis dans le code.")
-				pass
+				del Nb_Essais_Max
 				return
 				
 			if Choix_Code == "Choisissez comment":
-				showwarning("Erreur de syntaxe", "Veuillez définir un méthode de génération du code.")
-				pass
+				showwarning("Erreur de syntaxe", "Veuillez définir une méthode de génération du code.")
+				del Nb_Essais_Max
 				return
 			
 			Liste_Widgets = [Label_Pseudo, Entree_Pseudo, Bouton_Entrer, Label_Parametres, Entree_Parametre_1, Entree_Parametre_2, Menu_Parametre_3, Menu_Parametre_4, Bouton_Jouer]
@@ -165,7 +165,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 					Bouton_Abandonner.destroy()
 					
 					Essai = list(Essai) # Changement du type de variable de l'essai en "liste" pour diagnostiquer individuellement chaque chiffre
-					EssaiAux = Essai[:] # Définition d'une variable égale à l'essai pour garder sa valeur initiale qui sera réutilisée 
+					Essai2 = Essai[:] # Définition d'une variable égale à l'essai pour garder sa valeur initiale qui sera réutilisée 
 										# car certains chiffres de l'essai pourront être supprimés lors du diagnostic
 					while j < len(Code): # Diagnostic des chiffres de l'essai présents à la même place dans le code, ce sont des chiffres "bien placés"
 						if Essai[j] == Code[j]:
@@ -188,7 +188,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 					if Bien == Longueur_Code: # S'il y a autant de chiffres "bien placés" que de chiffres dans le code, la partie est terminée, c'est une victoire
 						Entree_Essai.destroy()
 						
-						Label_Essai_Correct = Label(Fenetre, text=EssaiAux, fg="red")
+						Label_Essai_Correct = Label(Fenetre, text=Essai2, fg="green")
 						Label_Gagne = Label(Fenetre, text="Gagné ! Vous avez trouvé le code en "+str(Nb_Essais)+" essai(s).", fg="green")
 					
 						Label_Essai_Correct.grid(row=Nb_Essais+4, column=2)
@@ -204,7 +204,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 						Entree_Essai.destroy()
 					
 						Label_Verification = Label(Fenetre, text=str(Bien)+" chiffre(s) bien placé(s) & "+str(Mal)+ " chiffre(s) mal placé(s).")
-						Label_Essai_Fixe = Label(Fenetre, text=EssaiAux)
+						Label_Essai_Fixe = Label(Fenetre, text="".join(Essai2))
 					
 						Label_Verification.grid(row=Nb_Essais+4, column=4)
 						Label_Essai_Fixe.grid(row=Nb_Essais+4, column=2)
