@@ -1,14 +1,15 @@
-﻿from tkinter import * # La syntaxe "from [module] import *" évite d'avoir à écrire "[module].[fonction]" chaque fois que l'on utilise une fonction du module
+﻿from tkinter import * # La syntaxe "from [module] import *" évite d'avoir à écrire "[module].[fonction]" chaque fois que l'on utilise une fonction de ce même module
 from random import *
 from tkinter.messagebox import *
 
 try: # Le module "winsound" n'est pas disponible sur Mac, on utilise "try" pour essayer de l'importer
 	from winsound import *
-except: # Exécute quelque chose en cas d'erreur
+except: # Exécute quelque chose en cas d'exception (d'erreur)
 	pass # "pass" n'exécute rien, mais "except" est obligatoire s'il y a un "try" avant (ici, on ignore une erreur d'importation)
 
 Fenetre = Tk() # Création de la fenêtre
 Fenetre.title("Mastermind") # Définition du titre de la fenêtre
+Fenetre.iconbitmap("questhead") # Changement de l'icône de la fenêtre
 	
 # Création de listes vides qui accueilleront les scores et les pseudos
 Noms_Joueurs = [] 
@@ -17,16 +18,10 @@ Scores_Joueurs = []
 def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fenêtre) pour le pseudo et les paramètres et qui contient également les autres fonctions
 	
 	for widget in Fenetre.winfo_children(): # "Fenetre.winfo_children" est la liste de tous les widgets de la fenêtre
-		widget.destroy() # D'abord suppression tous les widgets pour (re)commencer une partie
-	
-	try: # On utilise "try" pour cette suppression de variable car il est normal que ce paramètre ne soit pas encore défini au début de la première partie
-		global Nb_Essais_Max # "global" définit la variable comme locale aussi à cette fonction et non locale seulement à la fonction où elle est définie
-		del Nb_Essais_Max # Suppression de ce paramètre pour que le "try" de la fonction Recuperation_Parametres fonctionne lors de parties successives
-	except:
-		pass
+		widget.destroy() # D'abord suppression de tous les widgets pour recommencer une partie
 
 	Label_Pseudo = Label(Fenetre, text="Entrez votre pseudo pour enregistrer votre score en cas de victoire :") # Un "Label" est un widget affichant du texte
-	Entree_Pseudo = Entry(Fenetre, textvariable=StringVar()) # Une "Entry" est un widget permettant au joueur de rentrer qqch dans un champ de saisie
+	Entree_Pseudo = Entry(Fenetre, textvariable=StringVar()) # Une "Entry" est un widget permettant au joueur de rentrer une entrée dans un champ de saisie
 	
 	Label_Pseudo.grid(row=1, column=1) # La méthode "grid" permet d'organiser les widgets en tableau (lignes et colonnes)
 	Entree_Pseudo.grid(row=1, column=2)
@@ -46,7 +41,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 			Entree_Pseudo.destroy()
 			Bouton_Entrer.destroy()
 			
-			global Label_Chance
+			global Label_Chance # "global" va chercher la variable qui suit dans les autres fonctions où elle est utilisée pour qu'elle soit "mise en commun", donc globale
 			Label_Chance = Label(Fenetre, text="Bonne chance "+str(Pseudo)+" !", fg="green")
 			Label_Chance.grid(row=1, column=1)
 
@@ -57,71 +52,68 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 		
 		global Code, Code2, Nb_Essais_Max, Longueur_Code, Chiffres_Admis, Choix_Code, Nb_Essais
 		
-		try: # Ce "try" vérifie si les paramètres ont déjà été définis si on rappelle plus tard cette fontion si la syntaxe du code s'il est défini manuellement est incorrecte
-			a = int(Nb_Essais_Max) # La vérification de seulement un seul paramètre est nécessaire
+		# Récupération des paramètres
+		Nb_Essais_Max = Entree_Parametre_1.get() 
+		Longueur_Code = Entree_Parametre_2.get()
+		Chiffres_Admis = VariableParametre3.get()
+		Choix_Code = VariableParametre4.get()
+		
+		# Les boucles "if" et les "try" qui vont suivre vérifient la syntaxe des paramètres récupérés, 
+		# et rappelle la fonction Mastermind en cas d'erreur pour que le joueur les redéfinisse correctement
+		
+		try:
+			a = int(Nb_Essais_Max)
 		except:
-			# Récupération des paramètres
-			Nb_Essais_Max = Entree_Parametre_1.get() 
-			Longueur_Code = Entree_Parametre_2.get()
-			Chiffres_Admis = VariableParametre3.get()
-			Choix_Code = VariableParametre4.get()
+			showwarning("Erreur de syntaxe", "Le nombre d'essais maximum doit être un entier naturel non nul.")
+			del Nb_Essais_Max
+			return # On se sert ici de "return" tout seul comme d'un "break", mais pour une fonction
+		if int(Nb_Essais_Max) < 1:
+			showwarning("Erreur de syntaxe", "Le nombre d'essais maximum doit être un entier naturel non nul.")
+			del Nb_Essais_Max
+			return
+		
+		try:
+			a = int(Longueur_Code)
+		except:
+			showwarning("Erreur de syntaxe", "La longueur du code doit être un entier naturel non nul.")
+			del Nb_Essais_Max
+			return
+		if int(Longueur_Code) < 1:
+			showwarning("Erreur de syntaxe", "La longueur du code doit être un entier naturel non nul.")
+			del Nb_Essais_Max
+			return
 			
-			# Les boucles "if" et les "try" qui vont suivre vérifient la syntaxe des paramètres récupérés, 
-			# et rappelle la fonction Mastermind en cas d'erreur pour que le joueur les redéfinisse correctement
+		if Chiffres_Admis == "Choisissez une valeur":
+			showwarning("Erreur de syntaxe", "Veuillez définir les chiffres admis dans le code.")
+			del Nb_Essais_Max
+			return
 			
-			try:
-				a = int(Nb_Essais_Max)
-			except:
-				showwarning("Erreur de syntaxe", "Le nombre d'essais maximum doit être un nombre entier positif.")
-				del Nb_Essais_Max
-				return # On se sert ici de "return" tout seul comme d'un "break", mais pour une fonction
-			if int(Nb_Essais_Max) < 1:
-				showwarning("Erreur de syntaxe", "Le nombre d'essais maximum doit être un nombre entier positif.")
-				del Nb_Essais_Max
-				return
-			
-			try:
-				a = int(Longueur_Code)
-			except:
-				showwarning("Erreur de syntaxe", "La longueur du code doit être un nombre entier positif.")
-				del Nb_Essais_Max
-				return
-			if int(Longueur_Code) < 1:
-				showwarning("Erreur de syntaxe", "La longueur du code doit être un nombre entier positif.")
-				del Nb_Essais_Max
-				return
-				
-			if Chiffres_Admis == "Choisissez une valeur":
-				showwarning("Erreur de syntaxe", "Veuillez définir les chiffres admis dans le code.")
-				del Nb_Essais_Max
-				return
-				
-			if Choix_Code == "Choisissez comment":
-				showwarning("Erreur de syntaxe", "Veuillez définir une méthode de génération du code.")
-				del Nb_Essais_Max
-				return
-			
-			Liste_Widgets = [Label_Pseudo, Entree_Pseudo, Bouton_Entrer, Label_Parametres, Entree_Parametre_1, Entree_Parametre_2, Menu_Parametre_3, Menu_Parametre_4, Bouton_Jouer]
-			for widget in Liste_Widgets:			 
-				widget.destroy() # Suppression des widgets qui ont permis au joueur de définir les paramètres
-			
-			# On les remplace par des labels (fixes, donc) pour que les paramètres ne puissent plus être changés, mais restent quand même visibles
-			
-			Label_Parametre_1 = Label(Fenetre, text=Nb_Essais_Max, fg="orange")
-			Label_Parametre_2 = Label(Fenetre, text=Longueur_Code, fg="orange")
-			Label_Parametre_3 = Label(Fenetre, text=Chiffres_Admis, fg="orange")
-			Label_Parametre_4 = Label(Fenetre, text=Choix_Code, fg="orange")
-			
-			Label_Parametre_1.grid(row=3, column=2)
-			Label_Parametre_2.grid(row=3, column=3)
-			Label_Parametre_3.grid(row=3, column=4)
-			Label_Parametre_4.grid(row=3, column=5)
-			
-			# Changement du type des variables des paramètres pour qu'ils soient des nombres entiers utilisables mathématiquement dans les fonctions suivantes
-			
-			Nb_Essais_Max = int(Nb_Essais_Max)
-			Longueur_Code = int(Longueur_Code)
-			Chiffres_Admis = int(Chiffres_Admis)
+		if Choix_Code == "Choisissez comment":
+			showwarning("Erreur de syntaxe", "Veuillez définir une méthode de génération du code.")
+			del Nb_Essais_Max
+			return
+		
+		Liste_Widgets = [Label_Pseudo, Entree_Pseudo, Bouton_Entrer, Label_Parametres, Entree_Parametre_1, Entree_Parametre_2, Menu_Parametre_3, Menu_Parametre_4, Bouton_Jouer]
+		for widget in Liste_Widgets:			 
+			widget.destroy() # Suppression des widgets qui ont permis au joueur de définir les paramètres
+		
+		# On les remplace par des labels (fixes, donc) pour que les paramètres ne puissent plus être changés, mais restent quand même visibles
+		
+		Label_Parametre_1 = Label(Fenetre, text=Nb_Essais_Max, fg="orange")
+		Label_Parametre_2 = Label(Fenetre, text=Longueur_Code, fg="orange")
+		Label_Parametre_3 = Label(Fenetre, text=Chiffres_Admis, fg="orange")
+		Label_Parametre_4 = Label(Fenetre, text=Choix_Code, fg="orange")
+		
+		Label_Parametre_1.grid(row=3, column=2)
+		Label_Parametre_2.grid(row=3, column=3)
+		Label_Parametre_3.grid(row=3, column=4)
+		Label_Parametre_4.grid(row=3, column=5)
+		
+		# Changement du type des variables des paramètres pour qu'ils soient des nombres entiers utilisables mathématiquement dans les fonctions suivantes
+		
+		Nb_Essais_Max = int(Nb_Essais_Max)
+		Longueur_Code = int(Longueur_Code)
+		Chiffres_Admis = int(Chiffres_Admis)
 
 		def Preparation_Essai(): # Fonction affichant les widgets dédiés à la saisie de l'essai par le joueur
 			
@@ -195,8 +187,8 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 						Label_Gagne.grid(row=Nb_Essais+5, column=1)
 						
 						try: # Ce "try" essaie de jouer un son en cas de victoire, et ignore toute erreur en cas d'erreur d'importation préalable
-							PlaySound("Son_Victoire.wav", SND_NOWAIT) # "Son_Victoire.wav" est un des fichiers audio téléchargés avec le programme
-						except:
+							PlaySound("Son_Victoire.wav", SND_NOWAIT) # "Son_Victoire.wav" est un des fichiers audio téléchargés avec le programme;
+						except:										  # SND_NOWAIT est un argument pour que le son soit joué sans délai
 							pass
 					
 						Rejouer() # La partie est finie, on exécute la fonction "Rejouer"
@@ -275,7 +267,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 				Label_Perdu.grid(row=Nb_Essais+5, column=1)
 				
 				try:
-					PlaySound("Son_Défaite.wav", SND_NOWAIT) # "Son_Défaite.wav" est un des fichiers audio téléchargés avec le programme
+					PlaySound("Son_Défaite.wav", SND_NOWAIT) # "Son_Défaite.wav" est l'autre fichier audio téléchargé avec le programme,
 				except:
 					pass
 				
