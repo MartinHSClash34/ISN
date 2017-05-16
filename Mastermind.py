@@ -260,7 +260,14 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 				Bouton_Diagnostiquer = Button(Fenetre, text="Diagnostiquer", command=Diagnostic)
 				Bouton_Diagnostiquer.grid(row=Nb_Essais+4, column=3)
 				
-				Bouton_Abandonner = Button(Fenetre, text="Abandonner", command=Rejouer, fg="red")
+				def Abandon():
+				
+					global Nb_Essais
+					Nb_Essais = 11
+					
+					Rejouer()
+				
+				Bouton_Abandonner = Button(Fenetre, text="Abandonner", command=Abandon, fg="red")
 				Bouton_Abandonner.grid(row=Nb_Essais+4, column=4)
 			else:
 				Label_Perdu = Label(Fenetre, text="Perdu ! Vous avez utilisé votre(vos) "+str(Nb_Essais_Max)+" essai(s). Le code était : "+"".join(Code2), fg="red")
