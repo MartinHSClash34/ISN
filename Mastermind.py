@@ -49,7 +49,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 	Bouton_Entrer = Button(Fenetre, text="Entrer", command=Recuperation_Pseudo) # Un "Button" est un widget affichant un bouton dont on exécute la commande par un clic gauche dessus
 	Bouton_Entrer.grid(row=1, column=3)
 	
-	Lien = Label(Fenetre, text="[lien] Règles du jeu de base", fg="blue", cursor="hand2")
+	Lien = Label(Fenetre, text="[lien] Règles classiques du Mastermind", fg="blue", cursor="hand2")
 	Lien.grid(row=1, column=4)
 	
 	def Regles_du_jeu(lien):
