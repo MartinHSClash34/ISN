@@ -1,6 +1,7 @@
 ﻿from tkinter import * # La syntaxe "from [module] import *" évite d'avoir à écrire "[module].[fonction]" chaque fois que l'on utilise une fonction de ce même module
 from random import *
 from tkinter.messagebox import *
+from webbrowser import *
 
 try: # Le module "winsound" n'est pas disponible sur Mac, on utilise "try" pour essayer de l'importer
 	from winsound import *
@@ -47,6 +48,15 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 
 	Bouton_Entrer = Button(Fenetre, text="Entrer", command=Recuperation_Pseudo) # Un "Button" est un widget affichant un bouton dont on exécute la commande par un clic gauche dessus
 	Bouton_Entrer.grid(row=1, column=3)
+	
+	Lien = Label(Fenetre, text="[lien] Règles du jeu de base", fg="blue", cursor="hand2")
+	Lien.grid(row=1, column=4)
+	
+	def Regles_du_jeu(lien):
+		
+		open_new(r"https://fr.wikipedia.org/wiki/Mastermind") # Ouvre la page Wikipédia du Mastermind dans le navigateur par défaut
+		
+	Lien.bind("<Button-1>", Regles_du_jeu)
 			
 	def Recuperation_Parametres(): # Fonction récupèrant les paramètres de jeu dans les widgets dédiés
 		
@@ -263,7 +273,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 				def Abandon():
 				
 					global Nb_Essais
-					Nb_Essais = 11
+					Nb_Essais = Nb_Essais_Max + 1 # Un abandon étant une défaite, la partie doit être considéré comme telle
 					
 					Rejouer()
 				
