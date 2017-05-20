@@ -12,14 +12,14 @@ Fenetre = Tk() # Création de la fenêtre
 Fenetre.title("Mastermind") # Définition du titre de la fenêtre
 Fenetre.iconbitmap("questhead") # Changement de l'icône de la fenêtre
 	
-# Création de listes vides qui accueilleront les scores et les pseudos
-Noms_Joueurs = [] 
+# Création de listes vides qui stockeront les pseudos et les scores
+Pseudos_Joueurs = [] 
 Scores_Joueurs = []
 
 def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fenêtre) pour le pseudo et les paramètres et qui contient également les autres fonctions
 	
-	for widget in Fenetre.winfo_children(): # "Fenetre.winfo_children" est la liste de tous les widgets de la fenêtre
-		widget.destroy() # D'abord suppression de tous les widgets pour recommencer une partie
+	for widget in Fenetre.winfo_children(): # "Fenetre.winfo_children" est la liste de tous les widgets "enfants" de la fenêtre
+		widget.destroy()
 
 	Label_Pseudo = Label(Fenetre, text="Entrez votre pseudo pour enregistrer votre score en cas de victoire :") # Un "Label" est un widget affichant du texte
 	Entree_Pseudo = Entry(Fenetre, textvariable=StringVar()) # Une "Entry" est un widget permettant au joueur de rentrer une entrée dans un champ de saisie
@@ -31,11 +31,11 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 
 		Pseudo = Entree_Pseudo.get() # ".get()" récupère le contenu d'une entrée sous forme de chaîne de caractères 
 	
-		if Pseudo == "": # On vérifie que le joueur a bien entré un pseudo
+		if Pseudo == "": # On vérifie que le joueur a entré un pseudo
 			showwarning("Erreur de syntaxe", "Vous n'avez pas entré de pseudo.") # Un "showwarning" est une fenêtre pop-up utilisée pour afficher un message d'avertissement 
 			pass																 # C'est la seule fonction du module "tkinter.messagebox" qui est utilisée
 		else:
-			Noms_Joueurs.append(Pseudo)
+			Pseudos_Joueurs.append(Pseudo)
 		
 			# Suppression des widgets (devenus obsolètes) qui ont permis au joueur d'entrer son pseudo
 			Label_Pseudo.destroy()
@@ -219,7 +219,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 			
 					global Label_Chance, Pseudo
 			
-					Liste = [Label_Essai, Entree_Essai, Bouton_Diagnostiquer, Bouton_Abandonner] # En cas d'abandon, on supprime les widgets du dernier essai 
+					Liste = [Entree_Essai, Bouton_Diagnostiquer, Bouton_Abandonner] # En cas d'abandon, on supprime les widgets du dernier essai 
 					for widget in Liste:														 # qui n'ont pas été supprimés par la fonction Diagnostic
 						widget.destroy()
 					
@@ -233,12 +233,12 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 					except:
 						pass
 			
-					if len(Noms_Joueurs) != len(Scores_Joueurs): # On vérifie si le joueur a entré un pseudo
+					if len(Pseudos_Joueurs) != len(Scores_Joueurs): # On vérifie si le joueur a entré un pseudo
 						if Nb_Essais <= Nb_Essais_Max: # Si le joueur a gagné, on ajoute son score à son pseudo
-							Ajout_Score = str(Nb_Essais)+" essai(s) utilisé(s) sur "+str(Nb_Essais_Max)+" maximum pour un code à "+str(Longueur_Code)+" chiffre(s)."
-							Scores_Joueurs.append(Ajout_Score)
+							Score = str(Nb_Essais)+" essai(s) utilisé(s) sur "+str(Nb_Essais_Max)+" maximum pour un code à "+str(Longueur_Code)+" chiffre(s)."
+							Scores_Joueurs.append(Score)
 						else: # Sinon, on supprime son pseudo
-							del Noms_Joueurs[-1]
+							del Pseudos_Joueurs[-1]
 				
 					def Afficher_Scores(): # Fonction affichant les scores précédents
 			
@@ -250,8 +250,8 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 						Label_Nom.grid(row=Nb_Essais+6, column=1)
 						Label_Score.grid(row=Nb_Essais+6, column=2)
 						
-						for i in range(len(Noms_Joueurs)):
-							Label_Joueurs = Label(Fenetre, text=Noms_Joueurs[i])
+						for i in range(len(Pseudos_Joueurs)):
+							Label_Joueurs = Label(Fenetre, text=Pseudos_Joueurs[i])
 							Label_Scores_Joueurs = Label(Fenetre, text=Scores_Joueurs[i])
 					
 							Label_Joueurs.grid(row=Nb_Essais+7+i, column=1)
@@ -260,7 +260,7 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 					Bouton_Rejouer = Button(Fenetre, text="Rejouer", fg="green", command=Mastermind)
 					Bouton_Rejouer.grid(row=Nb_Essais+5, column=2)	
 			
-					if Noms_Joueurs != []:
+					if Pseudos_Joueurs != []:
 						Bouton_Aff_Scores = Button(Fenetre, text="Afficher les scores", command=Afficher_Scores)
 						Bouton_Aff_Scores.grid(row=Nb_Essais+5, column=3)
 			
@@ -274,6 +274,8 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 				
 					global Nb_Essais
 					Nb_Essais = Nb_Essais_Max + 1 # Un abandon étant une défaite, la partie doit être considéré comme telle
+					
+					Label_Essai.destroy()
 					
 					Rejouer()
 				
@@ -292,10 +294,10 @@ def Mastermind(): # Fonction mère qui affiche les widgets (éléments de la fen
 		
 		if Choix_Code == "...aléatoirement par l'ordinateur":
 			global Code, Code2
-			Code = []
+			Code = [] # Création d'une liste vide qui stockera le code
 			for i in range(Longueur_Code):
-				Code.append(str(randint(0,Chiffres_Admis))) # "randit" est la seule fonction du module "random" que l'on importe,
-			Code2 = Code[:]									# elle choisit un entier aléatoire entre 2 arguments a et b entiers inclus
+				Code.append(str(randint(0,Chiffres_Admis))) # "randit" un fonction du module "random" qui choisit un entier aléatoire entre 2 arguments a et b entiers inclus
+			Code2 = Code 
 			Nb_Essais = 1
 			
 			Preparation_Essai()
